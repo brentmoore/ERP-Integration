@@ -1,0 +1,37 @@
+sequenceDiagram
+
+    participant proAPI as Pro API
+    participant personsV3 as Persons V3 API
+    participant eventHub as Event Hub
+    participant scheduledTrigger as Scheduled Trigger
+    participant provisioningAPI as Provisioning API
+    participant provisioningDB as Provisioning DB
+    participant genetecAPI as Genetec Provisioning API
+    participant genetec as Genetec
+ 
+
+    eventHub ->> provisioningAPI:Subscribed Event
+    note right of eventHub: person, group, or HR event
+    provisioningAPI ->> provisioningDB: do we are about the event?
+    provisioningDB ->> provisioningAPI: systems that care
+    provisioningAPI ->> provisioningDB: persist provisioning command
+    provisioningAPI ->> eventHub: ACK
+
+    scheduledTrigger ->> provisioningAPI: process pending commands
+    note right of scheduledTrigger: Triggered execution
+    provisioningAPI ->> provisioningDB: get pending commands
+    provisioningDB ->> provisioningAPI: pending commands
+    provisioningAPI ->> genetecAPI: system provision request
+    genetecAPI ->> proAPI: Get ID Card photo
+    proAPI ->> genetecAPI: ID Card photo
+    genetecAPI ->> personsV3: Get person, groups, and HR resources
+    personsV3 ->> genetecAPI: Persons groups, and HR resources
+    genetecAPI ->> genetec: Provision/deprovision access
+    genetec ->> genetecAPI: Success
+    genetecAPI ->> provisioningAPI: Success
+    provisioningAPI ->> provisioningDB: Mark provisioning command complete
+
+
+
+
+

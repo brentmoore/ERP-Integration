@@ -1,0 +1,12 @@
+flowchart TB
+
+perWarehouse[("PER\n Warehouse")]
+gro[(Groups)]
+pro[("PRO/IAM")]
+personsV3["Persons V3 API"]
+client["API Client"]
+
+perWarehouse -- employment data --> personsV3
+gro -- groups data --> personsV3
+pro -- identity data --> personsV3
+personsV3 -- requested data --> client
